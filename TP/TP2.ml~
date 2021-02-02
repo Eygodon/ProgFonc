@@ -1,0 +1,21 @@
+#directory"../Modules/4.08.1";;
+open List;;
+map;;
+
+let rec mapList2 op lst1 lst2 =
+  match (lst1, lst2) with
+  | ([], []) -> []
+  | (e1::lt1, e2::lt2) -> (op e1 e2)::mapList2 op lt1 lt2
+;;
+
+mapList2 + [5;6;3] [6;3;4];;
+
+let max_map2 = map2(fun e1 e2 -> max e1 e2);;
+
+(* Exercice 2*)
+
+let incre n = n+1;;
+let inver n = 1./.n;;
+let prefin s = "in"^s;;
+let add2elem e1 e2 l = e1::(e2::l);;
+let l : int list = add2elem 5 3 [3 ; 2 ; 1];;

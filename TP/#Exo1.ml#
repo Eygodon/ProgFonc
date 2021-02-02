@@ -66,13 +66,10 @@ let rec parcoursInfixeAux(a, res : 'a t_btree * 'a list) : 'a list =
   |B_node(e,l,r) -> parcoursInfixeAux(l,e::parcoursInfixeAux(r,res))
 ;;
 
-let parcoursInfixeStart(a : 'a btree) : 'a list =
+let parcoursInfixeStart(a : 'a t_btree) : 'a list =
   parcoursInfixeAux(a,[])
 ;;
 
-let highest_each_branch( tree : 'a t_btree) : 'a list =
-  highest_each_branch_aux(tree, root(tree))
-;;
 
 let rec highest_each_branch_aux(tree, elem: 'a t_btree * 'a ) : 'a list =
   match tree with
@@ -89,7 +86,88 @@ let rec highest_each_branch_aux(tree, elem: 'a t_btree * 'a ) : 'a list =
   )
 ;;
 
-highest_each_branch(t1);;
-           
-    
+let highest_each_branch( tree : 'a t_btree) : 'a list =
+  highest_each_branch_aux(tree, root(tree))
+;;
+
+let rec max_in_branch_aux(t, r_value, lst : 'a t_btree * 'a * 'a list) : 'a list =
+    match t with
+    | B_empty -> []
+    | B_node(r, B_empty, B_empty) -> (max r_value r)::lst
+    | B_node(r, ls, rs) ->
+       let max_char : 'a = (max r_value r) in
+       max_in_branch_aux(ls, max_char, max_in_branch_aux(rs, max_char, lst))
+;;
+
+
+let max_in_branch(t : 'a t_btree) : 'a list =
+  match t with
+  | B_empty -> []
+  | B_node(r, ls, rs) -> max_in_branch_aux(ls, r, max_in_branch_aux(rs, r, []))
+;;
+
+max_in_branch(t1);;
+
+
+highest_each_branch(t1);;           
+
+(* Exercice 3 *)
+
+type 'a tree =
+  | Leaf of 'a
+  | Node of 'a *'a tree * 'a tree
+;;
+
+
+
+
+(* Exercice 4 *)
+
+type 'a t_tree3 =
+  |B_node of 'a t_tree3 * 'a t_tree3
+  |B_leaf of 'a         
+;;
   
+let t3 : int t_tree3 =
+  B_node(
+      B_node(
+          B_node(B_leaf(5),
+                 B_leaf(9)
+            ),
+          B_leaf(15)
+        ),
+      B_node(
+          B_node(
+              B_leaf(2),
+              B_node(B_leaf(17), B_leaf(8))
+            ),
+          B_node(B_leaf(3), B_leaf(25))
+        )
+    )
+;;
+
+let rec leaf_count_aux(tree, list : 'a t_tree3 * 'a list): 'a list =
+  match tree with
+  |B_node(ls, rs) -> leaf_count_aux(ls, leaf_count_aux(rs, list))
+  |B_leaf(valeur) -> valeur::list
+;;
+
+let leafList(tree : 'a t_tree3) : 'a list =
+  leaf_count_aux(tree, [])
+;;
+
+leafList(t3);;
+
+let rec leaf_Search_Aux(seeked, tree, list : 'a * 'a t_tree3* 'a list) : 'a list =
+  match tree with
+  |B_leaf(valeur) ->
+    if (seeked = valeur)
+    then (list)
+    else ([])
+  |B_node(ls, rs) -> leaf_count_aux(ls, 0::leaf_count_aux(rs, 1::list))
+;;
+
+let leaf_search(tree, seeked : 'a t_tree3 * 'a) : 'a list =
+  leaf_Search_Aux(seeked, tree, [])
+;;
+
